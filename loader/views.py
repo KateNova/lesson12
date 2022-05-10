@@ -25,7 +25,9 @@ def page_post_form():
                 # вызов ошибки, связанной с типом картинки
                 raise NotImageError("Файл не принадлежит к типу 'jpeg' и 'png'")
             # получение текста поста из формы по ключу
-            content = request.form["content"]
+            content = request.form.get("content")
+            if content == '':
+                raise ValueError("Описание не приложено")
             # сохранение картинки в папку "uploads"
             picture.save(f"./uploads/{picture.filename}")
             # создание словаря для дальнейшего добавления в существующий список словарей "posts.json"
@@ -36,5 +38,6 @@ def page_post_form():
             return "Файл не принадлежит к типу 'jpeg' и 'png'"
         # выполнение кода в случае возникновения ошибок
         except Exception as e:
+            print(e)
             logging.error('Ошибка загрузки')
-            return f"ошибка загрузки"
+            return f"ошибка загрузки: {e}"
